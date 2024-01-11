@@ -1,0 +1,68 @@
+import json
+import time
+fd=open("record.json","r")
+js=fd.read()
+fd.close()
+record=json.loads(js)
+print("----------------------------------------")
+print("****There is an offer going on. IF you order of amount more than 500 then you will offered 10% DISCOUNT!!****")
+print("-------------------MENU-----------------\n")
+for key in record.keys():
+    print(key, ":",  record[key]['name'],"|",record[key]['price'],"|",record[key]['Qn'])
+print("----------------------------------------\n")
+ui_username=input("enter your name: ")
+ui_phone_number=input("enter your number: ")
+ui_mailid=input("enter your mailid: ")
+ui_id=str(input("enter the product id         : "))
+ui_quan=int(input("enter the quantity you want: "))
+print("----------------------------------------\n")
+print("----------------------------------------\n")
+print(                  "BILL"                  )
+if ui_quan<=record[ui_id]['Qn']:
+    print("Name            :" ,record[ui_id]['name'])
+    print("price(in Rs)    :" ,record[ui_id]['price'],"Rs")
+    print("quantity        :" ,ui_quan)
+    print("----------------------------------------")
+    amount= ui_quan*record[ui_id]['price']
+    if(amount>500):
+        amount=amount-(0.1*amount)
+        print("amount      :" ,amount,"Rs")
+    else:
+        print("amount      :" ,ui_quan*record[ui_id]['price'],"Rs")
+    print("----------------------------------------")
+    sale=ui_username+','+ui_phone_number+','+ui_mailid+','+ui_id+','+str(ui_quan)+','+record[ui_id]['name']+','+str(record[ui_id]['price'])+','+str(ui_quan*record[ui_id]['price'])+','+time.ctime()+'\n'
+    record[ui_id]['Qn']=record[ui_id]['Qn']-ui_quan
+else:
+    print("we are having only", record[ui_id]['Qn'], "products")
+    print("Do you want to purchase them?")
+    ans=input("enter Y/N")                                   
+    if(ans=='Y' or ans=='y'):
+        ui_qn2=int(input(f"enter the quantity you want from {record[ui_id]['Qn']} quantity "))
+        print("Name            :" ,record[ui_id]['name'])
+        print("price(in Rs)    :" ,record[ui_id]['price'],"Rs")
+        print("quantity        :" ,ui_qn2)
+        print("----------------------------------------")
+        amount=ui_qn2*record[ui_id]['price']
+        if(amount>500):
+            amount=amount-(0.1*amount)
+            print("amount      :" ,amount,"Rs")
+        else:
+            print("amount      :" ,ui_quan*record[ui_id]['price'],"Rs")
+        print("----------------------------------------")
+        print("----------------------------------------")
+        sale=ui_username+','+ui_phone_number+','+ui_mailid+','+ui_id+','+str(ui_qn2)+','+record[ui_id]['name']+','+str(record[ui_id]['price'])+','+str(ui_qn2*record[ui_id]['price'])+','+time.ctime()+'\n'
+        record[ui_id]['Qn']=record[ui_id]['Qn']-ui_qn2
+    else:
+        print("SORRY FOR THE INCONVIENCE!")
+        
+    
+js=json.dumps(record)
+fd=open("record.json","w")
+fd.write(js)
+fd.close()
+fd=open('sales1.txt','a')
+fd.write(sale)
+fd.close()
+print("-----------------------------------------")
+print("        thanks for the order!            ")
+print("-----------------------------------------")
